@@ -32,11 +32,18 @@ public class Usuario {
     @Column(name = "estado", nullable = false, length = 10)
     private Estado estado;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol", nullable = false, length = 10)
+    private Rol rol;
+
+    @Column(name = "password", unique = true, length = 20)
+    private String password;
+
     public Usuario() {
     }
 
     public Usuario(Long id, String nombres, String apellidos, Integer edad,
-            String correo, String celular, String ruc, Estado estado) {
+            String correo, String celular, String ruc, Estado estado, Rol rol, String password) {
         this.id = id;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -45,6 +52,8 @@ public class Usuario {
         this.celular = celular;
         this.ruc = ruc;
         this.estado = estado;
+        this.rol = rol;
+        this.password= password;
     }
 
     public Long getId() {
@@ -111,4 +120,17 @@ public class Usuario {
         this.estado = estado;
     }
 
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
 }
+

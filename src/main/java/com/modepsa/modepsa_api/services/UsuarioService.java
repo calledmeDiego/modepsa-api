@@ -40,7 +40,7 @@ public class UsuarioService {
                     usuarioExistente.setCelular(usuario.getCelular());
                     usuarioExistente.setRuc(usuario.getRuc());
                     usuarioExistente.setEstado(usuario.getEstado());
-
+                    usuarioExistente.setRol(usuario.getRol());
                     return usuarioRepositorio.save(usuarioExistente);
                 })
                 .orElse(null);
