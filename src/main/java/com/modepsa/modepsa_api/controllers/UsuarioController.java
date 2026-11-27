@@ -1,11 +1,13 @@
 package com.modepsa.modepsa_api.controllers;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.modepsa.modepsa_api.dto.UsuarioRequestDTO;
 import com.modepsa.modepsa_api.models.Usuario;
 import com.modepsa.modepsa_api.services.UsuarioService;
 
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController 
 @RequestMapping("/api/usuarios")
@@ -39,9 +42,11 @@ public class UsuarioController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
-        return usuarioService.obtenerUsuarioPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Usuario user = usuarioService.obtenerUsuarioPorId(id);
+        if (user == null) {
+            return  ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "Registrar usuario", description = "Registra un nuevo usuario en el sistema.")
@@ -50,9 +55,10 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Datos de solicitud inválidos")
     })
     @PostMapping
-    public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> guardarUsuario(@Valid @RequestBody UsuarioRequestDTO usuario) {
         Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+        URI ubicacion = URI.create("api/libros/" + nuevoUsuario.getId());
+        return ResponseEntity.created(ubicacion).body(nuevoUsuario);
     }
 
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario existente.")
@@ -63,7 +69,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(
             @PathVariable Long id,
-            @RequestBody Usuario usuario) {
+            @Valid @RequestBody UsuarioRequestDTO usuario) {
 
         Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
 
@@ -80,10 +86,9 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable("id") Long id) {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

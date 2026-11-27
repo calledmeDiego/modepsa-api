@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.modepsa.modepsa_api.dto.UsuarioRequestDTO;
 import com.modepsa.modepsa_api.models.Usuario;
 import com.modepsa.modepsa_api.repository.UsuarioRepository;
 
@@ -22,31 +23,42 @@ public class UsuarioService {
         return usuarioRepositorio.findAll();
     }
 
-    public Optional<Usuario> obtenerUsuarioPorId(Long id) {
-        return usuarioRepositorio.findById(id);
-    }
-
-    public Usuario guardarUsuario(Usuario usuario) {
-        return usuarioRepositorio.save(usuario);
-    }
-
-    public Usuario actualizarUsuario(Long id, Usuario usuario) {
+    public Usuario obtenerUsuarioPorId(Long id) {
         return usuarioRepositorio.findById(id)
-                .map(usuarioExistente -> {
-                    usuarioExistente.setNombres(usuario.getNombres());
-                    usuarioExistente.setApellidos(usuario.getApellidos());
-                    usuarioExistente.setEdad(usuario.getEdad());
-                    usuarioExistente.setCorreo(usuario.getCorreo());
-                    usuarioExistente.setCelular(usuario.getCelular());
-                    usuarioExistente.setRuc(usuario.getRuc());
-                    usuarioExistente.setEstado(usuario.getEstado());
-                    usuarioExistente.setRol(usuario.getRol());
-                    return usuarioRepositorio.save(usuarioExistente);
-                })
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no existe"));
+    }
+
+    public Usuario guardarUsuario(UsuarioRequestDTO usuarioDatos) {
+        if (usuarioRepositorio.existsByDniIgnoreCaseOrCorreoIgnoreCaseOrCelularIgnoreCase(usuarioDatos.dni().trim(), usuarioDatos.correo().trim(),usuarioDatos.celular().trim())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un usuario con ese DNI, corr  eo o celular.");
+        }
+        Usuario user = new Usuario();
+        copiarDatos(usuarioDatos, user);
+
+        return usuarioRepositorio.save(user);
+    }
+
+    public Usuario actualizarUsuario(Long id, UsuarioRequestDTO usuarioDatos) {
+        Usuario usuarioObtenido = obtenerUsuarioPorId(id);
+
+        copiarDatos(usuarioDatos, usuarioObtenido);
+
+        return usuarioRepositorio.save(usuarioObtenido);
     }
 
     public void eliminarUsuario(Long id) {
-        usuarioRepositorio.deleteById(id);
+        Usuario user = obtenerUsuarioPorId(id);
+        usuarioRepositorio.deleteById(user.getId());
+    }
+
+    private void copiarDatos(UsuarioRequestDTO datos, Usuario user) {
+        user.setNombres(datos.nombres().trim());
+        user.setApellidos(datos.apellidos().trim());
+        user.setCelular(datos.celular().trim());
+        user.setCorreo(datos.correo().trim());
+        user.setDni(datos.dni().trim());
+        user.setEdad(datos.edad());
+        user.setEstado(datos.estado());
+        user.setRol(datos.rol());
     }
 }

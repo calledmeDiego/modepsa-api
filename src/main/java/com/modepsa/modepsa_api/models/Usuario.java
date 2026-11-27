@@ -25,8 +25,8 @@ public class Usuario {
     @Column(name = "celular", length = 15)
     private String celular;
 
-    @Column(name = "ruc", unique = true, length = 11)
-    private String ruc;
+    @Column(name = "dni", unique = true, length = 11)
+    private String dni;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 10)
@@ -43,14 +43,14 @@ public class Usuario {
     }
 
     public Usuario(Long id, String nombres, String apellidos, Integer edad,
-            String correo, String celular, String ruc, Estado estado, Rol rol, String password) {
+            String correo, String celular, String dni, Estado estado, Rol rol, String password) {
         this.id = id;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.edad = edad;
         this.correo = correo;
         this.celular = celular;
-        this.ruc = ruc;
+        this.dni = dni;
         this.estado = estado;
         this.rol = rol;
         this.password= password;
@@ -104,12 +104,12 @@ public class Usuario {
         this.celular = celular;
     }
 
-    public String getRuc() {
-        return ruc;
+    public String getDni() {
+        return dni;
     }
 
-    public void setRuc(String ruc) {
-        this.ruc = ruc;
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     public Estado getEstado() {
