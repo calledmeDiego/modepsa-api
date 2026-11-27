@@ -23,16 +23,16 @@ public class Cliente {
     @Column(name = "numero_documento", nullable = false, length = 20)
     private String numeroDocumento;
 
-    @Column(name = "nombres", length = 100)
+    @Column(name = "nombres", length = 50)
     private String nombres;
 
-    @Column(name = "apellidos", length = 100)
+    @Column(name = "apellidos", length = 50)
     private String apellidos;
 
     @Column(name = "razon_social", length = 150)
     private String razonSocial;
 
-    @Column(name = "correo", length = 120)
+    @Column(name = "correo", length = 70)
     private String correo;
 
     @Column(name = "celular", length = 20)

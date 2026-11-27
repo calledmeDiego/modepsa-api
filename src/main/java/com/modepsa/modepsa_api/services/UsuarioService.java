@@ -11,7 +11,10 @@ import com.modepsa.modepsa_api.dto.UsuarioRequestDTO;
 import com.modepsa.modepsa_api.models.Usuario;
 import com.modepsa.modepsa_api.repository.UsuarioRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional 
 public class UsuarioService {
     private final UsuarioRepository usuarioRepositorio;
 
