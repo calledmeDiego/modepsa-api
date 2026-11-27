@@ -57,7 +57,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<Usuario> guardarUsuario(@Valid @RequestBody UsuarioRequestDTO usuario) {
         Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
-        URI ubicacion = URI.create("api/libros/" + nuevoUsuario.getId());
+        URI ubicacion = URI.create("api/usuarios/" + nuevoUsuario.getId());
         return ResponseEntity.created(ubicacion).body(nuevoUsuario);
     }
 
